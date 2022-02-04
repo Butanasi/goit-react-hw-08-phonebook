@@ -1,33 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLogInUserMutation } from '../../redux/auth';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [logoutUser, setLogoutUser] = useState(true);
-  const [logInUser,{data,isError,error}] = useLogInUserMutation();
-
-  useEffect(() => {
-    if (data) {
-      localStorage.setItem(
-        'login',
-        JSON.stringify({
-          userLogin: true,
-          token: data.token,
-        }),
-      );
-      console.log('data', data.user.name);
-      setErrorMsg('');
-      setEmail('');
-      setPassword('');
-      setLogoutUser(false);
-    }
-    if (isError) {
-      setErrorMsg(error.data.message);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isError]);
+  const [logInUser] = useLogInUserMutation();
 
   const login = e => {
     e.preventDefault();

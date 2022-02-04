@@ -5,6 +5,7 @@ const initialState = {
   user: { name: null, email: null },
   token: null,
   isLoggedIn: false,
+  isRefresh: false,
 };
 
 export const authSlice = createSlice({
@@ -35,12 +36,24 @@ export const authSlice = createSlice({
         state.isLoggedIn = false;
       },
     );
-
+    builder.addMatcher(
+      loginApi.endpoints.fetchCurrentUser.matchPending,
+      state => {
+        state.isRefresh = true;
+      },
+    );
     builder.addMatcher(
       loginApi.endpoints.fetchCurrentUser.matchFulfilled,
       (state, { payload }) => {
         state.user = payload;
         state.isLoggedIn = true;
+        state.isRefresh = false;
+      },
+    );
+    builder.addMatcher(
+      loginApi.endpoints.fetchCurrentUser.matchRejected,
+      state => {
+        state.isRefresh = false;
       },
     );
   },

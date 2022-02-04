@@ -1,81 +1,53 @@
-// import { Routs } from './const';
-// import { Switch, Route } from 'react-router-dom';
-// import {} from './Views';
-// import { Form } from './Components/Form';
-// import { ContactList } from './Components/ContactList';
-// import { Filter } from './Components/Filter';
+import { Routs } from './const';
+import { Switch } from 'react-router-dom';
+import { PrivateRoute } from './Views/PrivatRoute';
+import { Header } from './Components/Header';
 import style from './App.module.scss';
-// import {
-//   useFetchContactsQuery,
-//   useDeleteContactMutation,
-// } from './redux/ContactApi';
-// import { Loader } from './Components/Loader';
-// import { getFilter } from './redux/filter/selector';
-// import { useSelector } from 'react-redux';
-import { Login } from './Components/Login';
-import { Logout } from './Components/Logout/Logout';
-// import { FormRegister } from './Components/FormRegister/FormRegister';
+import { lazy, Suspense } from 'react';
+import { Loader } from './Components/Loader';
+import { PublicRoute } from './Views/PublicRoute';
+import { useSelector } from 'react-redux';
+import { authSelectors } from './redux/auth';
+
+const HomePage = lazy(() => import('./Views/HomePage'));
+const RegisterPage = lazy(() => import('./Views/RegisterPage'));
+const LoginPage = lazy(() => import('./Views/LoginPage'));
+const ContactsPage = lazy(() => import('./Views/ContactsPage'));
 
 function App() {
-  // // const { data, isFetching } = useFetchContactsQuery();
-  //   // const [deleteContact] = useDeleteContactMutation();
-  //   // const filter = useSelector(getFilter);
-  //   // const getVisibleContacts = () => {
-  //   //   const normalizedFilter = filter.toLowerCase();
-  //   //   const visibleContacts = data.filter(contact =>
-  //   //     contact.name.toLowerCase().includes(normalizedFilter),
-  //   //   );
-  //   //   return visibleContacts;
-  //   // };
+  const isRefresh = useSelector(authSelectors.getIsRefresh);
   return (
-    <div className={style.container}>
-      {/* <h1 className={style.title}>Phonebook</h1>
-  //       <Form contacts={data} />
-  //       <h2 className={style.title}>Contacts</h2>
-  //       <Filter />
-  //       {isFetching && <Loader />}
-  //       {data && (
-  //         <ContactList
-  //           contacts={getVisibleContacts()}
-  //           onDeleteContact={deleteContact}
-  //         />
-  //       )} */}
-      <Login />
-      {/* <FormRegister /> */}
-      <Logout />
-    </div>
+    !isRefresh && (
+      <div className={style.container}>
+        <Header />
+        <Switch>
+          <Suspense fallback={<Loader />}>
+            <PublicRoute exact path={Routs.HOME}>
+              <HomePage />
+            </PublicRoute>
+            <PublicRoute
+              path={Routs.REGISTER}
+              redirectTo={Routs.CONTACTS}
+              restricted
+            >
+              <RegisterPage />
+            </PublicRoute>
+            <PublicRoute
+              path={Routs.LOGIN}
+              redirectTo={Routs.CONTACTS}
+              restricted
+            >
+              <LoginPage />
+            </PublicRoute>
+
+            <PrivateRoute path={Routs.CONTACTS} redirectTo={Routs.LOGIN}>
+              <ContactsPage />
+            </PrivateRoute>
+          </Suspense>
+        </Switch>
+      </div>
+    )
   );
 }
 
 export default App;
-
-// // const { data, isFetching } = useFetchContactsQuery();
-//   // const [deleteContact] = useDeleteContactMutation();
-//   // const filter = useSelector(getFilter);
-
-//   // const getVisibleContacts = () => {
-//   //   const normalizedFilter = filter.toLowerCase();
-//   //   const visibleContacts = data.filter(contact =>
-//   //     contact.name.toLowerCase().includes(normalizedFilter),
-//   //   );
-//   //   return visibleContacts;
-//   // };
-
-//   return (
-//     <div className={style.container}>
-//       {/* <h1 className={style.title}>Phonebook</h1>
-//       <Form contacts={data} />
-//       <h2 className={style.title}>Contacts</h2>
-//       <Filter />
-//       {isFetching && <Loader />}
-//       {data && (
-//         <ContactList
-//           contacts={getVisibleContacts()}
-//           onDeleteContact={deleteContact}
-//         />
-//       )} */}
-//       <Login />
-//       {/* <FormRegister /> */}
-//       <Logout />
-//     </div>
-//   );

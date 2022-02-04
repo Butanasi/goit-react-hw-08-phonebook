@@ -65,4 +65,5 @@ export const {
   useAddNewUserMutation,
   useLogInUserMutation,
   useLogOutUserMutation,
+  useFetchCurrentUserQuery,
 } = loginApi;
