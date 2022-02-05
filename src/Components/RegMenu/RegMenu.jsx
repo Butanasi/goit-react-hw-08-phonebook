@@ -5,6 +5,7 @@ export function RegMenu() {
   return (
     <div>
       <NavLink to={Routs.REGISTER}>REGISTER</NavLink>
+
       <NavLink to={Routs.LOGIN}>LOGIN</NavLink>
     </div>
   );

@@ -1,14 +1,18 @@
+import { Container, TextField } from '@mui/material';
 import { useState } from 'react';
-import { useAddNewUserMutation } from '../../redux/auth';
+// import { useDispatch } from 'react-redux';
+import { operations, useAddNewUserMutation } from '../../redux/auth';
 
 export function FormRegister() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [addNewUser] = useAddNewUserMutation();
+  // const dispatch = useDispatch();
 
   const register = e => {
     e.preventDefault();
+    // dispatch(operations.register({ name, email, password }));
     addNewUser({ name, email, password });
     setEmail('');
     setName('');
@@ -34,26 +38,40 @@ export function FormRegister() {
   };
 
   return (
-    <div>
+    <Container>
       <form onSubmit={register}>
-        <label>Name</label>
-        <input type="text" name="name" onChange={handleChange} value={name} />
-        <label>Email</label>
-        <input
+        <TextField
+          label="Name"
+          variant="standard"
+          type="text"
+          name="name"
+          onChange={handleChange}
+          value={name}
+          sx={{ mt: '10px' }}
+        />
+
+        <TextField
+          label="Email"
+          variant="standard"
           type="email"
           name="email"
           onChange={handleChange}
           value={email}
+          sx={{ mt: '10px' }}
         />
-        <label>Password</label>
-        <input
+
+        <TextField
+          label="Password"
+          variant="standard"
           type="password"
           name="password"
           onChange={handleChange}
           value={password}
+          sx={{ mt: '10px' }}
         />
+
         <button type="submit">Login In</button>
       </form>
-    </div>
+    </Container>
   );
 }

@@ -1,11 +1,52 @@
 import { createSlice } from '@reduxjs/toolkit';
+// import { operations } from './operations';
+
+// const initialState = {
+//   user: { name: null, email: null },
+//   token: null,
+//   isLoggedIn: false,
+// };
+
+// const authSlice = createSlice({
+//   name: 'auth',
+//   initialState,
+//   extraReducers: {
+//     [operations.register.fulfilled](state, { payload }) {
+//       state.user = payload.user;
+//       state.token = null;
+//       state.isLoggedIn = true;
+//     },
+//     [operations.logIn.fulfilled](state, { payload }) {
+//       state.user = payload.user;
+//       state.token = payload.token;
+//       state.isLoggedIn = true;
+//     },
+//     [operations.logOut.fulfilled](state, { payload }) {
+//       state.user = { name: null, email: null };
+//       state.token = null;
+//       state.isLoggedIn = false;
+//     },
+//     [operations.fetchCurrentUser.pending](state) {
+//       state.isFetchingCurrentUser = true;
+//     },
+//     [operations.fetchCurrentUser.fulfilled](state, { payload }) {
+//       state.user = payload;
+//       state.isLoggedIn = true;
+//     },
+//     [operations.fetchCurrentUser.rejected](state) {
+//       state.isFetchingCurrentUser = false;
+//     },
+//   },
+// });
+
+// export default authSlice.reducer;
+
 import { loginApi } from './operations';
 
 const initialState = {
   user: { name: null, email: null },
   token: null,
   isLoggedIn: false,
-  isRefresh: false,
 };
 
 export const authSlice = createSlice({
@@ -37,23 +78,10 @@ export const authSlice = createSlice({
       },
     );
     builder.addMatcher(
-      loginApi.endpoints.fetchCurrentUser.matchPending,
-      state => {
-        state.isRefresh = true;
-      },
-    );
-    builder.addMatcher(
-      loginApi.endpoints.fetchCurrentUser.matchFulfilled,
+      loginApi.endpoints.tokenRefresh.matchFulfilled,
       (state, { payload }) => {
         state.user = payload;
         state.isLoggedIn = true;
-        state.isRefresh = false;
-      },
-    );
-    builder.addMatcher(
-      loginApi.endpoints.fetchCurrentUser.matchRejected,
-      state => {
-        state.isRefresh = false;
       },
     );
   },

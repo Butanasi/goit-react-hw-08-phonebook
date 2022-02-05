@@ -3,22 +3,18 @@ import { RegMenu } from '../RegMenu';
 import { Logout } from '../Logout';
 import { useSelector } from 'react-redux';
 import { authSelectors } from '../../redux/auth';
-import { useFetchCurrentUserQuery } from '../../redux/auth/operations';
-import { Loader } from '../Loader';
-
+import { AppBar, Toolbar } from '@mui/material';
 export function Header() {
   const isLoggedIn = useSelector(authSelectors.getIsLoggedIn);
-  const token = useSelector(authSelectors.getToken);
-  const { isLoading } = useFetchCurrentUserQuery(token, {
-    skip: token === null || isLoggedIn,
-  });
 
-  return isLoading ? (
-    <Loader />
-  ) : (
-    <header>
-      <Navigation />
-      {!isLoggedIn ? <RegMenu /> : <Logout />}
-    </header>
+  return (
+    <AppBar position="static">
+      <Toolbar variant="dense">
+        <>
+          <Navigation />
+          {isLoggedIn ? <Logout /> : <RegMenu />}
+        </>
+      </Toolbar>
+    </AppBar>
   );
 }

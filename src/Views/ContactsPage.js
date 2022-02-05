@@ -21,6 +21,7 @@ export default function ContactsPage() {
     );
     return visibleContacts;
   };
+
   return (
     <div className={style.container}>
       <h1 className={style.title}>Phonebook</h1>
@@ -28,6 +29,7 @@ export default function ContactsPage() {
       <h2 className={style.title}>Contacts</h2>
       <Filter />
       {isFetching && <Loader />}
+
       {data && (
         <ContactList
           contacts={getVisibleContacts()}

@@ -1,52 +1,85 @@
 import { Routs } from './const';
 import { Switch } from 'react-router-dom';
-import { PrivateRoute } from './Views/PrivatRoute';
 import { Header } from './Components/Header';
-import style from './App.module.scss';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
+import {
+  // useDispatch,
+  useSelector,
+} from 'react-redux';
+import {
+  authSelectors,
+  // operations,
+  useTokenRefreshQuery,
+} from './redux/auth';
 import { Loader } from './Components/Loader';
-import { PublicRoute } from './Views/PublicRoute';
-import { useSelector } from 'react-redux';
-import { authSelectors } from './redux/auth';
+import { PublicPage } from './Views/PublicPage';
+import { PrivatPage } from './Views/PrivatPage';
 
-const HomePage = lazy(() => import('./Views/HomePage'));
-const RegisterPage = lazy(() => import('./Views/RegisterPage'));
-const LoginPage = lazy(() => import('./Views/LoginPage'));
-const ContactsPage = lazy(() => import('./Views/ContactsPage'));
+const HomePage = lazy(() =>
+  import('./Views/HomePage' /* webpackChunkName: "HomePage" */),
+);
+const RegisterPage = lazy(() =>
+  import('./Views/RegisterPage' /* webpackChunkName: "RegisterPage" */),
+);
+const LoginPage = lazy(() =>
+  import('./Views/LoginPage' /* webpackChunkName: "LoginPage" */),
+);
+const ContactsPage = lazy(() =>
+  import('./Views/ContactsPage' /* webpackChunkName: "ContactsPage" */),
+);
 
 function App() {
-  const isRefresh = useSelector(authSelectors.getIsRefresh);
-  return (
-    !isRefresh && (
-      <div className={style.container}>
-        <Header />
-        <Switch>
-          <Suspense fallback={<Loader />}>
-            <PublicRoute exact path={Routs.HOME}>
-              <HomePage />
-            </PublicRoute>
-            <PublicRoute
-              path={Routs.REGISTER}
-              redirectTo={Routs.CONTACTS}
-              restricted
-            >
-              <RegisterPage />
-            </PublicRoute>
-            <PublicRoute
-              path={Routs.LOGIN}
-              redirectTo={Routs.CONTACTS}
-              restricted
-            >
-              <LoginPage />
-            </PublicRoute>
+  // const dispatch = useDispatch();
+  const isFetchingCurrentUser = useSelector(authSelectors.getIsFetchingCurrent);
 
-            <PrivateRoute path={Routs.CONTACTS} redirectTo={Routs.LOGIN}>
-              <ContactsPage />
-            </PrivateRoute>
-          </Suspense>
-        </Switch>
-      </div>
-    )
+  // const [tokenRefresh] = useTokenRefreshQuery();
+
+  // const token = useSelector(authSelectors.getToken);
+  // useEffect(() => {
+  //   if (token) {
+  //     return;
+  //   }
+  //   // tokenRefresh();
+  //   // dispatch(operations.fetchCurrentUser());
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   // dispatch,
+  //   token,
+  // ]);
+
+  return (
+    <div>
+      {isFetchingCurrentUser ? (
+        <Loader />
+      ) : (
+        <>
+          <Header />
+          <Switch>
+            <Suspense fallback={<Loader />}>
+              <PublicPage exact path={Routs.HOME}>
+                <HomePage />
+              </PublicPage>
+              <PublicPage exact path={Routs.REGISTER} restricted>
+                <RegisterPage />
+              </PublicPage>
+
+              <PublicPage
+                exact
+                path={Routs.LOGIN}
+                redirectTo={Routs.CONTACTS}
+                restricted
+              >
+                <LoginPage />
+              </PublicPage>
+
+              <PrivatPage path={Routs.CONTACTS} redirectTo={Routs.LOGIN}>
+                <ContactsPage />
+              </PrivatPage>
+            </Suspense>
+          </Switch>
+        </>
+      )}
+    </div>
   );
 }
 

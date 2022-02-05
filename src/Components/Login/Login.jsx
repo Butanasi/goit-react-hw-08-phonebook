@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useLogInUserMutation } from '../../redux/auth';
+// import { useDispatch } from 'react-redux';
+// import { operations } from '../../redux/auth';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // const dispatch = useDispatch();
   const [logInUser] = useLogInUserMutation();
-
   const login = e => {
     e.preventDefault();
+    // dispatch(operations.logIn({ email, password }));
     logInUser({ email, password });
     setEmail('');
     setPassword('');
@@ -45,7 +48,7 @@ export function Login() {
           onChange={handleChange}
           value={password}
         />
-        <button type="submit">Login In</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );

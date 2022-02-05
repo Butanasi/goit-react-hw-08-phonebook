@@ -1,11 +1,27 @@
-import { useLogOutUserMutation } from '../../redux/auth';
+import {
+  // useDispatch,
+  useSelector,
+} from 'react-redux';
+import {
+  authSelectors,
+  // operations,
+  useLogOutUserMutation,
+} from '../../redux/auth';
 
 export function Logout() {
-  const [logoutUser] = useLogOutUserMutation();
-
+  const [logOutUser] = useLogOutUserMutation();
+  // const dispatch = useDispatch();
+  const name = useSelector(authSelectors.getUserName);
   return (
     <div>
-      <button type="button" onClick={() => logoutUser()}>
+      <span>Hello {name}</span>
+      <button
+        type="button"
+        onClick={() =>
+          // dispatch(operations.logOut())
+          logOutUser()
+        }
+      >
         Logout
       </button>
     </div>
