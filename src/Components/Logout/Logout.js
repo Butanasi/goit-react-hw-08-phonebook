@@ -1,29 +1,18 @@
-import {
-  // useDispatch,
-  useSelector,
-} from 'react-redux';
-import {
-  authSelectors,
-  // operations,
-  useLogOutUserMutation,
-} from '../../redux/auth';
+import { useSelector } from 'react-redux';
+import { authSelectors, useLogOutUserMutation } from '../../redux/auth';
+import { Box, Button } from '@mui/material';
+import style from './style.module.scss';
 
 export function Logout() {
   const [logOutUser] = useLogOutUserMutation();
-  // const dispatch = useDispatch();
+
   const name = useSelector(authSelectors.getUserName);
   return (
-    <div>
-      <span>Hello {name}</span>
-      <button
-        type="button"
-        onClick={() =>
-          // dispatch(operations.logOut())
-          logOutUser()
-        }
-      >
+    <Box sx={{ position: 'absolute', right: '20px' }}>
+      <span className={style.span}>Hello {name}</span>
+      <Button variant="contained" type="button" onClick={() => logOutUser()}>
         Logout
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 }

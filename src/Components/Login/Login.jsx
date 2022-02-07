@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLogInUserMutation } from '../../redux/auth';
-// import { useDispatch } from 'react-redux';
-// import { operations } from '../../redux/auth';
-
+import { Box, Button, TextField } from '@mui/material';
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const dispatch = useDispatch();
-  const [logInUser] = useLogInUserMutation();
+
+  const [logInUser, { isError }] = useLogInUserMutation();
+
+  useEffect(() => {
+    if (isError) {
+      alert('Bad Request');
+    }
+  }, [isError]);
   const login = e => {
     e.preventDefault();
-    // dispatch(operations.logIn({ email, password }));
+
     logInUser({ email, password });
     setEmail('');
     setPassword('');
@@ -33,23 +37,46 @@ export function Login() {
 
   return (
     <div>
-      <form onSubmit={login}>
-        <label>Email</label>
-        <input
+      <Box
+        component="form"
+        sx={{
+          mt: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onSubmit={login}
+      >
+        <TextField
+          label="Email"
           type="email"
           name="email"
           onChange={handleChange}
           value={email}
+          sx={{ mt: '10px', width: '300px' }}
+          required
         />
-        <label>Password</label>
-        <input
+
+        <TextField
+          label="Password"
           type="password"
           name="password"
           onChange={handleChange}
           value={password}
+          sx={{ mt: '10px', width: '300px' }}
+          required
         />
-        <button type="submit">Login</button>
-      </form>
+        <Button
+          sx={{
+            mt: '10px',
+            width: '100px',
+          }}
+          type="submit"
+        >
+          Login
+        </Button>
+      </Box>
     </div>
   );
 }

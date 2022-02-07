@@ -1,18 +1,21 @@
-import { Container, TextField } from '@mui/material';
-import { useState } from 'react';
-// import { useDispatch } from 'react-redux';
-import { operations, useAddNewUserMutation } from '../../redux/auth';
+import { Box, Button, TextField } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { useAddNewUserMutation } from '../../redux/auth';
 
 export function FormRegister() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [addNewUser] = useAddNewUserMutation();
-  // const dispatch = useDispatch();
+  const [addNewUser, { isError }] = useAddNewUserMutation();
 
+  useEffect(() => {
+    if (isError) {
+      alert('Bad Request');
+    }
+  }, [isError]);
   const register = e => {
     e.preventDefault();
-    // dispatch(operations.register({ name, email, password }));
+
     addNewUser({ name, email, password });
     setEmail('');
     setName('');
@@ -38,8 +41,17 @@ export function FormRegister() {
   };
 
   return (
-    <Container>
-      <form onSubmit={register}>
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        component="form"
+        onSubmit={register}
+      >
         <TextField
           label="Name"
           variant="standard"
@@ -47,7 +59,8 @@ export function FormRegister() {
           name="name"
           onChange={handleChange}
           value={name}
-          sx={{ mt: '10px' }}
+          sx={{ mt: '10px', width: '300px' }}
+          required
         />
 
         <TextField
@@ -57,7 +70,8 @@ export function FormRegister() {
           name="email"
           onChange={handleChange}
           value={email}
-          sx={{ mt: '10px' }}
+          sx={{ mt: '10px', width: '300px' }}
+          required
         />
 
         <TextField
@@ -67,11 +81,14 @@ export function FormRegister() {
           name="password"
           onChange={handleChange}
           value={password}
-          sx={{ mt: '10px' }}
+          sx={{ mt: '10px', width: '300px' }}
+          required
         />
 
-        <button type="submit">Login In</button>
-      </form>
-    </Container>
+        <Button sx={{ mt: '10px', width: '300px' }} type="submit">
+          Login In
+        </Button>
+      </Box>
+    </>
   );
 }

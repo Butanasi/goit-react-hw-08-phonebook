@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import style from './Form.module.scss';
+
 import PropTypes from 'prop-types';
 import { useCreateContactMutation } from '../../redux/ContactApi';
+import { TextField, Button } from '@mui/material';
+import { Box } from '@mui/system';
 
 export function Form({ contacts }) {
   const [createContact] = useCreateContactMutation();
@@ -40,11 +42,22 @@ export function Form({ contacts }) {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label className={style.label}>Name</label>
-        <input
-          className={style.input}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          margin: '5',
+          width: '400',
+        }}
+      >
+        <TextField
+          label="Name"
           type="text"
+          sx={{ marginTop: '10px', width: '300px' }}
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           value={name}
@@ -53,10 +66,10 @@ export function Form({ contacts }) {
           required
         />
 
-        <label className={style.label}>Tel</label>
-        <input
-          className={style.input}
+        <TextField
+          label="Phone"
           type="tel"
+          sx={{ marginTop: '10px', width: '300px' }}
           name="number"
           value={number}
           onChange={handleChange}
@@ -65,10 +78,10 @@ export function Form({ contacts }) {
           required
         />
 
-        <button className={style.button} type="submit">
+        <Button sx={{ marginTop: '10px', width: '300px' }} type="submit">
           Add contact
-        </button>
-      </form>
+        </Button>
+      </Box>
     </>
   );
 }

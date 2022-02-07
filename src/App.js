@@ -1,16 +1,9 @@
 import { Routs } from './const';
 import { Switch } from 'react-router-dom';
 import { Header } from './Components/Header';
-import { lazy, Suspense, useEffect } from 'react';
-import {
-  // useDispatch,
-  useSelector,
-} from 'react-redux';
-import {
-  authSelectors,
-  // operations,
-  useTokenRefreshQuery,
-} from './redux/auth';
+import { lazy, Suspense } from 'react';
+import { useSelector } from 'react-redux';
+import { authSelectors, useTokenRefreshQuery } from './redux/auth';
 import { Loader } from './Components/Loader';
 import { PublicPage } from './Views/PublicPage';
 import { PrivatPage } from './Views/PrivatPage';
@@ -29,27 +22,15 @@ const ContactsPage = lazy(() =>
 );
 
 function App() {
-  // const dispatch = useDispatch();
-  const isFetchingCurrentUser = useSelector(authSelectors.getIsFetchingCurrent);
-
-  // const [tokenRefresh] = useTokenRefreshQuery();
-
-  // const token = useSelector(authSelectors.getToken);
-  // useEffect(() => {
-  //   if (token) {
-  //     return;
-  //   }
-  //   // tokenRefresh();
-  //   // dispatch(operations.fetchCurrentUser());
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [
-  //   // dispatch,
-  //   token,
-  // ]);
+  const isLoggedIn = useSelector(authSelectors.getIsLoggedIn);
+  const token = useSelector(authSelectors.getToken);
+  const { isLoading } = useTokenRefreshQuery(token, {
+    skip: token === null || isLoggedIn,
+  });
 
   return (
     <div>
-      {isFetchingCurrentUser ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <>
@@ -59,6 +40,7 @@ function App() {
               <PublicPage exact path={Routs.HOME}>
                 <HomePage />
               </PublicPage>
+
               <PublicPage exact path={Routs.REGISTER} restricted>
                 <RegisterPage />
               </PublicPage>
